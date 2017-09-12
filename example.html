@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <script src="/index.js">
+    </script>
+  </head>
+  <body>
+    <div id="content">
+    </div>
+    <script>
+      function toMsg(msg, color) {
+        var el = document.getElementById('content');
+        var html = el.innerHTML;
+        if (!color) color = 'black';
+        el.innerHTML = html + '<p style="color:' + color + '">' + (new Date).toLocaleString() + '  ' + msg + '</p>';
+      };
+      function testTimeout (tm) {
+        toMsg('延时测试', 'red');
+        return new aPromise(function(resolve){
+          setTimeout(resolve, tm);
+          toMsg(this.id + "a promise time start");
+        }).then(function(){
+          toMsg(this.id + "a promise time then");
+          return "then 参数"
+        }).then(function(arg) {
+          toMsg(arg);
+          toMsg(this.id + '参数测试成功');
+        });
+      }
+      function testRejct () {
+        return new aPromise(function(resolve) {
+          toMsg(this.id + 'catch 测试', 'red')
+        throw new Error('try error');
+      }).then(function() {
+          toMsg(this.id + '不执行');
+        }).catch(function(e) {
+          toMsg(this.id+'执行catch 测试');
+          return 'run catch success';
+        }).then(function(msg) {
+          toMsg(this.id + 'catch sucess then ' + msg);
+        })
+      }
+      testTimeout(1000).then(function(){
+      }).then(function() {
+         testRejct().then(function(){
+          toMsg(this.id + '最后执行')
+        }).then(function(){
+          aPromise.resolve().then(function(){ toMsg(this.id + 'test resolve')})
+        })
+      })
+      // testRejct();
+    </script>
+  </body>
+</html>

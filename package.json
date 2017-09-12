@@ -1,0 +1,15 @@
+{
+  "name": "apromise",
+  "version": "1.0.0",
+  "description": "简单实现 primose/A 例子",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "promise",
+    "promise/A"
+  ],
+  "author": "arnkorty",
+  "license": "ISC"
+}
