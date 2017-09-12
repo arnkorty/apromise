@@ -15,17 +15,24 @@ var aPromise = function (callback) {
   }
   return that;
 };
+// aPromise.resolve().then(function(){console.log('foo')})
 aPromise.resolve = function() {
   return new aPromise(function(resolve){
-    resolve()
+    resolve(arguments)
   })
 }
+// aPromise.rejected().catch(function(){console.log('foo')})
 aPromise.rejected = function() {
   return new aPromise(function(_, rejected){
-    rejected()
+    rejected(arguments)
   })
 }
+
+// then,catch 的队伍
 aPromise.prototype.queue = []
+// 记录执行的参数
+aPromise.prototype.args = [];
+
 aPromise.prototype.then = function(resolve, rejected) {
   this.queue.push({fn: resolve, type: 'resolve'});
   if (rejected) {
@@ -34,13 +41,14 @@ aPromise.prototype.then = function(resolve, rejected) {
   this.process();
   return this;
 }
+
 aPromise.prototype.catch = function(rejected) {
   this.queue.push({fn: rejected, type: 'rejected'})
   this.process();
   return this;
 }
-aPromise.prototype.args = [];
 
+// 执行
 aPromise.prototype.process = function(rejected) {
   var callback;
   while (this.state !== 'pending' && this.queue.length > 0) {
@@ -59,6 +67,7 @@ aPromise.prototype.process = function(rejected) {
   
   return this;
 }
+
 aPromise.prototype.resolve = function() {
   this.state = 'resolve';
   this.args = arguments;
